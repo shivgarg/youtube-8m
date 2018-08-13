@@ -254,9 +254,7 @@ def build_graph(reader,
   tf.summary.histogram("model/input_raw", model_input_raw)
 
   feature_dim = len(model_input_raw.get_shape()) - 1
-
   model_input = tf.nn.l2_normalize(model_input_raw, feature_dim)
-
   tower_inputs = tf.split(model_input, num_towers)
   tower_labels = tf.split(labels_batch, num_towers)
   tower_num_frames = tf.split(num_frames, num_towers)
@@ -356,8 +354,10 @@ class Trainer(object):
     self.task = task
     self.is_master = (task.type == "master" and task.index == 0)
     self.train_dir = train_dir
+    gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=1)
     self.config = tf.ConfigProto(
-        allow_soft_placement=True,log_device_placement=log_device_placement)
+        allow_soft_placement=True,log_device_placement=log_device_placement,gpu_options=gpu_options)
+    
     self.model = model
     self.reader = reader
     self.model_exporter = model_exporter
@@ -389,6 +389,7 @@ class Trainer(object):
         "frame_features": FLAGS.frame_features,
         "label_loss": FLAGS.label_loss,
     }
+    
     flags_json_path = os.path.join(FLAGS.train_dir, "model_flags.json")
     if os.path.exists(flags_json_path):
       existing_flags = json.load(open(flags_json_path))
@@ -584,7 +585,7 @@ class Trainer(object):
                  batch_size=FLAGS.batch_size,
                  num_epochs=FLAGS.num_epochs)
 
-    return tf.train.Saver(max_to_keep=0, keep_checkpoint_every_n_hours=0.25)
+    return tf.train.Saver(max_to_keep=1, keep_checkpoint_every_n_hours=0.5)
 
 
 def get_reader():

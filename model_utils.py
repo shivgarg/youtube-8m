@@ -69,7 +69,7 @@ def SampleRandomFrames(model_input, num_frames, num_samples):
   index = tf.stack([batch_index, frame_index], 2)
   return tf.gather_nd(model_input, index)
 
-def FramePooling(frames, method, **unused_params):
+def FramePooling(frames, method, scope='default', **unused_params):
   """Pools over the frames of a video.
 
   Args:
@@ -84,12 +84,18 @@ def FramePooling(frames, method, **unused_params):
     ValueError: if method is other than "average", "max", "attention", or
     "none".
   """
-  if method == "average":
-    return tf.reduce_mean(frames, 1)
-  elif method == "max":
-    return tf.reduce_max(frames, 1)
-  elif method == "none":
-    feature_size = frames.shape_as_list()[2]
-    return tf.reshape(frames, [-1, feature_size])
-  else:
-    raise ValueError("Unrecognized pooling method: %s" % method)
+  with tf.variable_scope(scope,tf.AUTO_REUSE):
+    if method == "average":
+      return tf.reduce_mean(frames, 1)
+    elif method == "max":
+      return tf.reduce_max(frames, 1)
+    elif method == "none":
+      feature_size = frames.shape_as_list()[2]
+      return tf.reshape(frames, [-1, feature_size])
+    elif method == "attention":
+      feature_size = frames.shape[2]
+      weights = tf.get_variable("w1",shape=[1,feature_size],dtype=tf.float32,initializer=tf.contrib.layers.xavier_initializer(),regularizer=tf.contrib.layers.l2_regularizer(0.5))
+      frames = tf.nn.tanh(tf.reduce_sum(tf.multiply(frames,tf.reduce_sum(tf.multiply(tf.nn.tanh(frames),weights),2,keepdims=True)),1))
+      return frames
+    else:
+      raise ValueError("Unrecognized pooling method: %s" % method)
