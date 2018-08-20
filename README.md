@@ -1,12 +1,8 @@
 # YouTube-8M Tensorflow Starter Code
 
 This repo contains starter code for training and evaluating machine learning
-models over the [YouTube-8M](https://research.google.com/youtube8m/) dataset. This is the starter code for our [2nd Youtube8M Video Understanding Challenge on Kaggle](https://www.kaggle.com/c/youtube8m-2018) and part of the European Conference on Computer Vision (ECCV) 2018 selected workshop session. 
-The code gives an end-to-end working example for reading the dataset, training a
-TensorFlow model, and evaluating the performance of the model. Out of the box,
-you can train several [model architectures](#overview-of-models) over either
-frame-level or video-level features. The code can easily be extended to train
-your own custom-defined models.
+models over the [YouTube-8M](https://research.google.com/youtube8m/) dataset. This is the code for [2nd Youtube8M Video Understanding Challenge on Kaggle](https://www.kaggle.com/c/youtube8m-2018) and part of the European Conference on Computer Vision (ECCV) 2018 selected workshop session. The code can easily be extended to train your own custom-defined models. The codebase is based on starter [code](https://github.com/google/youtube-8m) provided by Google.
+**Trained models are uploaded at [Onedrive](https://1drv.ms/f/s!Arliu2tf0Sw8gp87tqxWsyM5aubNzg)**. A detailed report containing details of all approaches is coming soon.
 
 ## Table of Contents
 * [Running on Your Own Machine](#running-on-your-own-machine)
